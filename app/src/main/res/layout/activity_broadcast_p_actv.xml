@@ -35,9 +35,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/instanceid_texto"
         android:id="@+id/instanceid_texto"
-        android:layout_below="@+id/namespace_string"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp" />
+        android:layout_below="@+id/rnd_btn1"
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -48,5 +47,39 @@
         android:autoText="false"
         android:inputType="textCapCharacters"
         android:text="AABBCCDDEEFF" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rnd_btn"
+        android:id="@+id/rnd_btn2"
+        android:layout_alignTop="@+id/instance_string"
+        android:layout_toEndOf="@+id/namespaceid_texto" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rnd_btn"
+        android:id="@+id/rnd_btn1"
+        android:layout_alignTop="@+id/namespace_string"
+        android:layout_toEndOf="@+id/namespace_string" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txpower_spnr"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/namespaceid_texto"
+        android:layout_alignEnd="@+id/rnd_btn2" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txmode_spnr"
+        android:layout_below="@+id/txpower_spnr"
+        android:layout_alignStart="@+id/instance_string"
+        android:layout_alignEnd="@+id/txpower_spnr" />
 
 </RelativeLayout>
