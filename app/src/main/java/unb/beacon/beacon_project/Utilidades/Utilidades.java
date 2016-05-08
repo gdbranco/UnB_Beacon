@@ -21,6 +21,7 @@ public class Utilidades extends Activity{
 
     public static final ParcelUuid SERVICE_UUID = ParcelUuid.fromString("0000FEAA-0000-1000-8000-00805F9B34FB");
     public static final byte FRAME_TYPE_UID = 0x00;
+    public static final int REQUEST_ENABLE_BLUETOOTH = 1;
     public static final String P_NAMESPACE = "namespace";
     public static final String P_INSTANCE = "instance";
     public static final String P_TXPOWER = "tx_power_level";

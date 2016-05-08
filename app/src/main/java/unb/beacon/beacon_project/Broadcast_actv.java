@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.bluetooth.le.AdvertiseSettings;
@@ -21,6 +22,7 @@ import unb.beacon.beacon_project.Utilidades.Utilidades;
 public class Broadcast_actv extends Activity {
     private BluetoothLeAdvertiser adv;
     private AdvertiseCallback advertiseCallback;
+    private boolean hasBT;
     String instance;
     String namespace;
     int txpower;
@@ -33,17 +35,55 @@ public class Broadcast_actv extends Activity {
         init();
     }
 
-    private void init()
+    private boolean request_bluetooth()
     {
-        instance = Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_INSTANCE);
-        namespace = Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_NAMESPACE);
-        txpower = Utilidades.SharedPreferencesManager.getInstance().getInt(Utilidades.P_TXPOWER);
-        admode =  Utilidades.SharedPreferencesManager.getInstance().getInt(Utilidades.P_TXMODE);
         BluetoothManager m = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter mBluetoothAdapter = m.getAdapter();
-        adv = mBluetoothAdapter.getBluetoothLeAdvertiser();
-        advertiseCallback = createAdvertiseCallback();
-        Interface();
+        boolean ok = false;
+        if (mBluetoothAdapter == null) {
+            Utilidades.showAlert("Erro", "Bluetooth não existe!",this);
+        } else {
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enablebt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                this.startActivityForResult(enablebt, Utilidades.REQUEST_ENABLE_BLUETOOTH);
+            } else if (!mBluetoothAdapter.isMultipleAdvertisementSupported()) {
+                Utilidades.showAlert("Erro", "Bluetooth LE não suportado", this);
+            } else {
+                adv = mBluetoothAdapter.getBluetoothLeAdvertiser();
+                advertiseCallback = createAdvertiseCallback();
+                ok = true;
+            }
+        }
+        return ok;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case Utilidades.REQUEST_ENABLE_BLUETOOTH:
+                if (resultCode == Activity.RESULT_OK) {
+                    init();
+                } else {
+                    finish();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void init()
+    {
+        hasBT = request_bluetooth();
+        if(hasBT)
+        {
+            instance = Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_INSTANCE);
+            namespace = Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_NAMESPACE);
+            txpower = Utilidades.SharedPreferencesManager.getInstance().getInt(Utilidades.P_TXPOWER);
+            admode =  Utilidades.SharedPreferencesManager.getInstance().getInt(Utilidades.P_TXMODE);
+            Interface();
+        }
     }
 
     private void Interface()
@@ -59,7 +99,10 @@ public class Broadcast_actv extends Activity {
 
     public void onBackPressed()
     {
-        stopAdvertising();
+        if(hasBT)
+        {
+            stopAdvertising();
+        }
         finish();
     }
 

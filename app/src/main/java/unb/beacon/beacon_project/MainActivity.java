@@ -16,8 +16,6 @@ import unb.beacon.beacon_project.Utilidades.Utilidades;
 
 
 public class MainActivity extends AppCompatActivity{
-
-    private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     TextView texto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,30 +26,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void init(){
-        boolean OK = request_bluetooth();
-        if(OK)
-        {
-            Interface();
-        }
-    }
-
-    private boolean request_bluetooth()
-    {
-        BluetoothManager m = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter mBluetoothAdapter = m.getAdapter();
-        if (mBluetoothAdapter == null) {
-            Utilidades.showAlert("Erro", "Bluetooth não existe!",this);
-        } else {
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enablebt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                this.startActivityForResult(enablebt, REQUEST_ENABLE_BLUETOOTH);
-            } else if (!mBluetoothAdapter.isMultipleAdvertisementSupported()) {
-                Utilidades.showAlert("Erro", "Bluetooth LE não suportado", this);
-            } else {
-                return true;
-            }
-        }
-        return false;
+        Interface();
     }
 
     public void Interface()
@@ -89,22 +64,6 @@ public class MainActivity extends AppCompatActivity{
                     startActivity(i);
                 }
             });
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_ENABLE_BLUETOOTH:
-                if (resultCode == Activity.RESULT_OK) {
-                    init();
-                } else {
-                    finish();
-                }
-                break;
-            default:
-                break;
         }
     }
 }
