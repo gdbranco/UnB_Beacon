@@ -39,6 +39,10 @@ public class Broadcast_actv extends Activity {
         namespace = Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_NAMESPACE);
         txpower = Utilidades.SharedPreferencesManager.getInstance().getInt(Utilidades.P_TXPOWER);
         admode =  Utilidades.SharedPreferencesManager.getInstance().getInt(Utilidades.P_TXMODE);
+        BluetoothManager m = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothAdapter mBluetoothAdapter = m.getAdapter();
+        adv = mBluetoothAdapter.getBluetoothLeAdvertiser();
+        advertiseCallback = createAdvertiseCallback();
         Interface();
     }
 
@@ -80,11 +84,6 @@ public class Broadcast_actv extends Activity {
                 .setIncludeTxPowerLevel(false)
                 .setIncludeDeviceName(false)
                 .build();
-
-        BluetoothManager m = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter mBluetoothAdapter = m.getAdapter();
-        adv = mBluetoothAdapter.getBluetoothLeAdvertiser();
-        advertiseCallback = createAdvertiseCallback();
         adv.startAdvertising(advertiseSettings, advertiseData, advertiseCallback);
     }
 
