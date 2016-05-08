@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.le.AdvertiseSettings;
 import android.content.DialogInterface;
-import android.content.pm.ActivityInfo;
 import android.content.SharedPreferences;
 import android.content.Context;
+import android.os.ParcelUuid;
 
+import java.io.CharConversionException;
 import java.util.Random;
 
 import unb.beacon.beacon_project.R;
@@ -17,6 +18,9 @@ import unb.beacon.beacon_project.R;
  */
 public class Utilidades extends Activity{
 
+
+    public static final ParcelUuid SERVICE_UUID = ParcelUuid.fromString("0000FEAA-0000-1000-8000-00805F9B34FB");
+    public static final byte FRAME_TYPE_UID = 0x00;
     public static final String P_NAMESPACE = "namespace";
     public static final String P_INSTANCE = "instance";
     public static final String P_TXPOWER = "tx_power_level";
@@ -105,7 +109,34 @@ public class Utilidades extends Activity{
         return s;
     }
 
+    // Converts the current Tx power level value to the byte value for that power
+    // in dBm at 0 meters.
+    //
+    // Note that this will vary by device and the values are only roughly accurate.
+    // The measurements were taken with a Nexus 6.
+    public static byte txPowerLevelToByteValue(int powerlvl) {
+        switch (powerlvl) {
+            case AdvertiseSettings.ADVERTISE_TX_POWER_HIGH:
+                return (byte) -16;
+            case AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM:
+                return (byte) -26;
+            case AdvertiseSettings.ADVERTISE_TX_POWER_LOW:
+                return (byte) -35;
+            default:
+                return (byte) -59;
+        }
+    }
 
+    public static byte[] toByteArray(String s)
+    {
+        int len = s.length();
+        byte[] bytes = new byte[len/2];
+        for(int i=0;i<len;i+=2)
+        {
+            bytes[i/2] = (byte) ((Character.digit(s.charAt(i),16) << 4) + Character.digit(s.charAt(i+1),16));
+        }
+        return bytes;
+    }
 
     public static String randomHexString(int len)
     {

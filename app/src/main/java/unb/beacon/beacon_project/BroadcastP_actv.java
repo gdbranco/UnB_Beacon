@@ -9,19 +9,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.bluetooth.le.AdvertiseSettings;
-
-import java.util.Arrays;
 
 import unb.beacon.beacon_project.Utilidades.Utilidades;
 
 public class BroadcastP_actv extends Activity {
     private EditText namespace;
     private EditText instance;
-    private Button rnd_namespace;
-    private Button rnd_instance;
-    private Spinner txpower;
-    private Spinner txmode;
     int txPowerLevel;
     int adMode;
 
@@ -49,6 +42,10 @@ public class BroadcastP_actv extends Activity {
 
     private void Interface()
     {
+        Button rnd_namespace;
+        Button rnd_instance;
+        Spinner txpower;
+        Spinner txmode;
         txPowerLevel = Utilidades.SharedPreferencesManager.getInstance().getInt(Utilidades.P_TXPOWER);
         adMode = Utilidades.SharedPreferencesManager.getInstance().getInt(Utilidades.P_TXMODE);
         namespace = (EditText) findViewById(R.id.namespace_string);

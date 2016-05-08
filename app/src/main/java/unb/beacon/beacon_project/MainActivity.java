@@ -18,7 +18,6 @@ import unb.beacon.beacon_project.Utilidades.Utilidades;
 public class MainActivity extends AppCompatActivity{
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
-    private BluetoothLeAdvertiser adv;
     TextView texto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +54,6 @@ public class MainActivity extends AppCompatActivity{
             } else if (!mBluetoothAdapter.isMultipleAdvertisementSupported()) {
                 Utilidades.showAlert("Erro", "Bluetooth LE não suportado", this);
             } else {
-                adv = mBluetoothAdapter.getBluetoothLeAdvertiser();
                 return true;
             }
         }
