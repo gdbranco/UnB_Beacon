@@ -1,14 +1,10 @@
 package unb.beacon.beacon_project;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,14 +18,13 @@ import unb.beacon.beacon_project.Utilidades.Utilidades;
 public class MainActivity extends AppCompatActivity{
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
-    private SharedPreferences sPref;
     private BluetoothLeAdvertiser adv;
     TextView texto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sPref = getSharedPreferences(Utilidades.SHARED_PREFS_NAME, 0);
+        Utilidades.SharedPreferencesManager.getInstance(getApplicationContext());
         init();
     }
 
@@ -42,7 +37,7 @@ public class MainActivity extends AppCompatActivity{
         else
         {
             texto = (TextView) findViewById(R.id.textView);
-            texto.setText(sPref.getString(Utilidades.P_NAMESPACE,"default"));
+            texto.setText(Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_NAMESPACE));
         }
     }
 
@@ -75,30 +70,33 @@ public class MainActivity extends AppCompatActivity{
         broad_preference_btn = (ImageButton) findViewById(R.id.broadcast_preference_btn);
         locator_btn = (Button) findViewById(R.id.locator_btn);
         broad_btn = (Button) findViewById(R.id.broadcast_btn);
-
-        broad_preference_btn.setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(getApplicationContext(),BroadcastP_actv.class);
-                startActivity(i);
-            }
-        });
-        broad_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),Broadcast_actv.class);
-                startActivity(i);
-            }
-        });
-        locator_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),Locator_actv.class);
-                startActivity(i);
-            }
-        });
+        if(broad_preference_btn!=null) {
+            broad_preference_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getApplicationContext(), BroadcastP_actv.class);
+                    startActivity(i);
+                }
+            });
+        }
+        if(broad_btn!=null) {
+            broad_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getApplicationContext(), Broadcast_actv.class);
+                    startActivity(i);
+                }
+            });
+        }
+        if(locator_btn!=null) {
+            locator_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getApplicationContext(), Locator_actv.class);
+                    startActivity(i);
+                }
+            });
+        }
     }
 
     @Override

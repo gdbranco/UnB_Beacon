@@ -1,14 +1,12 @@
 package unb.beacon.beacon_project;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.EditText;
 
 import unb.beacon.beacon_project.Utilidades.Utilidades;
 
 public class BroadcastP_actv extends Activity {
-    private SharedPreferences sPref;
     private EditText namespace;
     private EditText instance;
 
@@ -16,7 +14,6 @@ public class BroadcastP_actv extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_broadcast_p_actv);
-        sPref = getSharedPreferences(Utilidades.SHARED_PREFS_NAME, 0);
         init();
     }
 
@@ -28,19 +25,17 @@ public class BroadcastP_actv extends Activity {
     protected void onPause() {
         super.onPause();
         if(namespace != null && instance != null){
-            SharedPreferences.Editor editor = sPref.edit();
-            editor.putString(Utilidades.P_NAMESPACE, namespace.getText().toString());
-            editor.putString(Utilidades.P_INSTANCE, instance.getText().toString());
-            editor.apply();
+            Utilidades.SharedPreferencesManager.getInstance().putString(Utilidades.P_NAMESPACE,namespace.getText().toString());
+            Utilidades.SharedPreferencesManager.getInstance().putString(Utilidades.P_INSTANCE,instance.getText().toString());
         }
     }
 
     private void Interface()
     {
         namespace = (EditText) findViewById(R.id.namespace_string);
-        namespace.setText(sPref.getString("namespace", "00010203040506070809"));
+        namespace.setText(Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_NAMESPACE));
         instance = (EditText) findViewById(R.id.instance_string);
-        instance.setText(sPref.getString("instance", "AABBCCDDEEFF"));
+        instance.setText(Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_INSTANCE));
     }
 
     @Override
