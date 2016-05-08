@@ -9,6 +9,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.bluetooth.le.AdvertiseSettings;
+import android.bluetooth.le.AdvertiseCallback;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,6 +20,7 @@ import unb.beacon.beacon_project.Utilidades.Utilidades;
 
 public class Broadcast_actv extends Activity {
     private BluetoothLeAdvertiser adv;
+    private AdvertiseCallback advertiseCallback;
     String instance;
     String namespace;
     int txpower;
@@ -81,11 +84,12 @@ public class Broadcast_actv extends Activity {
         BluetoothManager m = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter mBluetoothAdapter = m.getAdapter();
         adv = mBluetoothAdapter.getBluetoothLeAdvertiser();
-        adv.startAdvertising(advertiseSettings, advertiseData, null);
+        advertiseCallback = createAdvertiseCallback();
+        adv.startAdvertising(advertiseSettings, advertiseData, advertiseCallback);
     }
 
     private void stopAdvertising() {
-        adv.stopAdvertising(null);
+        adv.stopAdvertising(advertiseCallback);
     }
 
     private byte[] buildServiceData() throws IOException
@@ -98,6 +102,38 @@ public class Broadcast_actv extends Activity {
         os.write(bnamespace);
         os.write(binstance);
         return os.toByteArray();
+    }
+
+    private AdvertiseCallback createAdvertiseCallback() {
+        return new AdvertiseCallback() {
+            @Override
+            public void onStartFailure(int errorCode) {
+                switch (errorCode) {
+                    case ADVERTISE_FAILED_DATA_TOO_LARGE:
+                        showToast("ADVERTISE_FAILED_DATA_TOO_LARGE");
+                        break;
+                    case ADVERTISE_FAILED_TOO_MANY_ADVERTISERS:
+                        showToast("ADVERTISE_FAILED_TOO_MANY_ADVERTISERS");
+                        break;
+                    case ADVERTISE_FAILED_ALREADY_STARTED:
+                        showToast("ADVERTISE_FAILED_ALREADY_STARTED");
+                        break;
+                    case ADVERTISE_FAILED_INTERNAL_ERROR:
+                        showToast("ADVERTISE_FAILED_INTERNAL_ERROR");
+                        break;
+                    case ADVERTISE_FAILED_FEATURE_UNSUPPORTED:
+                        showToast("ADVERTISE_FAILED_FEATURE_UNSUPPORTED");
+                        break;
+                    default:
+                        showToast("startAdvertising failed with unknown error " + errorCode);
+                        break;
+                }
+            }
+        };
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
 }
