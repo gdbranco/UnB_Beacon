@@ -5,19 +5,18 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.EditText;
 
+import unb.beacon.beacon_project.Utilidades.Utilidades;
+
 public class BroadcastP_actv extends Activity {
     private SharedPreferences sPref;
     private EditText namespace;
     private EditText instance;
-    private static final String P_NAMESPACE = "namespace";
-    private static final String P_INSTANCE = "instance";
-    private static final String SHARED_PREFS_NAME = "beacon-uid-prefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_broadcast_p_actv);
-        sPref = getSharedPreferences(SHARED_PREFS_NAME, 0);
+        sPref = getSharedPreferences(Utilidades.SHARED_PREFS_NAME, 0);
         init();
     }
 
@@ -30,8 +29,8 @@ public class BroadcastP_actv extends Activity {
         super.onPause();
         if(namespace != null && instance != null){
             SharedPreferences.Editor editor = sPref.edit();
-            editor.putString(P_NAMESPACE, namespace.getText().toString());
-            editor.putString(P_INSTANCE, instance.getText().toString());
+            editor.putString(Utilidades.P_NAMESPACE, namespace.getText().toString());
+            editor.putString(Utilidades.P_INSTANCE, instance.getText().toString());
             editor.apply();
         }
     }

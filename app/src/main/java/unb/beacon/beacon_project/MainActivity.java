@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,13 +22,14 @@ import unb.beacon.beacon_project.Utilidades.Utilidades;
 public class MainActivity extends AppCompatActivity{
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
+    private SharedPreferences sPref;
     private BluetoothLeAdvertiser adv;
-    private Utilidades U;
     TextView texto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sPref = getSharedPreferences(Utilidades.SHARED_PREFS_NAME, 0);
         init();
     }
 
@@ -37,6 +39,11 @@ public class MainActivity extends AppCompatActivity{
         {
             Interface();
         }
+        else
+        {
+            texto = (TextView) findViewById(R.id.textView);
+            texto.setText(sPref.getString(Utilidades.P_NAMESPACE,"default"));
+        }
     }
 
     private boolean request_bluetooth()
@@ -44,18 +51,14 @@ public class MainActivity extends AppCompatActivity{
         BluetoothManager m = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter mBluetoothAdapter = m.getAdapter();
         if (mBluetoothAdapter == null) {
-            U.showAlert("Erro","Bluetooth não existe!");
+            Utilidades.showAlert("Erro", "Bluetooth não existe!",this);
         } else {
             if (!mBluetoothAdapter.isEnabled()) {
-                Intent enablebt = new Intent(mBluetoothAdapter.ACTION_REQUEST_ENABLE);
-                this.startActivityForResult(enablebt,REQUEST_ENABLE_BLUETOOTH);
-            }
-            else if(!mBluetoothAdapter.isMultipleAdvertisementSupported())
-            {
-                U.showAlert("Erro","Bluetooth LE não suportado");
-            }
-            else
-            {
+                Intent enablebt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                this.startActivityForResult(enablebt, REQUEST_ENABLE_BLUETOOTH);
+            } else if (!mBluetoothAdapter.isMultipleAdvertisementSupported()) {
+                Utilidades.showAlert("Erro", "Bluetooth LE não suportado", this);
+            } else {
                 adv = mBluetoothAdapter.getBluetoothLeAdvertiser();
                 return true;
             }
