@@ -108,6 +108,11 @@ public class Broadcast_actv extends Activity {
 
     private void startAdvertising()
     {
+        showToast(String.format(Locale.US,"NAMESPACE: %s\nINSTANCE: %s\nPOWERLEVEL: %s\nADMODE: %s",
+                Utilidades.hextoString(namespace),
+                instance,
+                Utilidades.getPowerLevel(getApplicationContext(),txpower),
+                Utilidades.getADMode(getApplicationContext(),admode)));
         AdvertiseSettings advertiseSettings = new AdvertiseSettings.Builder()
                 .setAdvertiseMode(admode)
                 .setTxPowerLevel(txpower)
