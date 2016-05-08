@@ -8,7 +8,9 @@ import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.DialogInterface;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.EditText;
 
 public class Broadcast_actv extends Activity {
 

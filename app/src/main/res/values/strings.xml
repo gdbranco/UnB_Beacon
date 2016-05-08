@@ -5,7 +5,9 @@
     <string name="locator_text">Cheguei no locator</string>
     <string name="broadcast_texto">Cheguei no broadcast</string>
     <string name="title_activity_broadcast_p_actv">BroadcastP_actv</string>
-
+    <string name="namespaceid_texto">Namespace ID (10-byte)</string>
+    <string name="instanceid_texto">Instance ID (6-byte)</string>
+    <string name="hint_text">HEXADECIMAL NUMBER</string>
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

@@ -9,4 +9,44 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="unb.beacon.beacon_project.BroadcastP_actv">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/namespaceid_texto"
+        android:id="@+id/namespaceid_texto"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp"
+        android:singleLine="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/namespace_string"
+        android:layout_below="@+id/namespaceid_texto"
+        android:layout_centerHorizontal="true"
+        android:inputType="textCapCharacters"
+        android:text="00010203040506070809" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/instanceid_texto"
+        android:id="@+id/instanceid_texto"
+        android:layout_below="@+id/namespace_string"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/instance_string"
+        android:layout_below="@+id/instanceid_texto"
+        android:layout_centerHorizontal="true"
+        android:autoText="false"
+        android:inputType="textCapCharacters"
+        android:text="AABBCCDDEEFF" />
+
 </RelativeLayout>
