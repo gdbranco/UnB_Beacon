@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.content.Context;
 import android.os.ParcelUuid;
 
-import java.io.CharConversionException;
+import java.math.BigInteger;
 import java.util.Random;
 
 import unb.beacon.beacon_project.R;
@@ -125,6 +125,20 @@ public class Utilidades extends Activity{
             default:
                 return (byte) -59;
         }
+    }
+
+    public static String stringtoHex(String arg, int len) {
+        return String.format("%0" + new Integer(len).toString() + "X", new BigInteger(1, arg.getBytes()));
+    }
+
+    public static String hextoString(String hex)
+    {
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < hex.length(); i+=2) {
+            String str = hex.substring(i, i+2);
+            output.append((char)Integer.parseInt(str, 16));
+        }
+        return output.toString();
     }
 
     public static byte[] toByteArray(String s)

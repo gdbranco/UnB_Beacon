@@ -1,6 +1,7 @@
 package unb.beacon.beacon_project;
 
 import android.app.Activity;
+import android.view.KeyEvent;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.os.Bundle;
@@ -50,6 +51,21 @@ public class BroadcastP_actv extends Activity {
         adMode = Utilidades.SharedPreferencesManager.getInstance().getInt(Utilidades.P_TXMODE);
         namespace = (EditText) findViewById(R.id.namespace_string);
         namespace.setText(Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_NAMESPACE));
+        namespace.setOnKeyListener(new View.OnKeyListener()
+        {
+           public boolean onKey(View v, int keycode, KeyEvent event)
+           {
+               if((event.getAction() == KeyEvent.ACTION_DOWN)&&(keycode == KeyEvent.KEYCODE_ENTER))
+               {
+                   if(!Utilidades.isValidHexString(namespace.getText().toString(),10))
+                   {
+                       namespace.setText(Utilidades.stringtoHex(namespace.getText().toString(),20));
+                   }
+                   return true;
+               }
+               return false;
+           }
+        });
         instance = (EditText) findViewById(R.id.instance_string);
         instance.setText(Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_INSTANCE));
         rnd_namespace = (Button) findViewById(R.id.rnd_btn1);

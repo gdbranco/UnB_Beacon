@@ -29,16 +29,10 @@ public class MainActivity extends AppCompatActivity{
 
     public void init(){
         boolean OK = request_bluetooth();
-        /*if(OK)
+        if(OK)
         {
             Interface();
         }
-        else
-        {
-            texto = (TextView) findViewById(R.id.textView);
-            texto.setText(Utilidades.SharedPreferencesManager.getInstance().getString(Utilidades.P_NAMESPACE));
-        }*/
-        Interface();;
     }
 
     private boolean request_bluetooth()

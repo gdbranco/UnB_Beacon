@@ -43,7 +43,7 @@ public class Broadcast_actv extends Activity {
     {
         TextView text = (TextView) findViewById(R.id.broadcast_texto);
         text.setText(String.format(Locale.US,"NAMESPACE: %s\nINSTANCE: %s\nPOWERLEVEL: %s\nADMODE: %s",
-                namespace,
+                Utilidades.hextoString(namespace),
                 instance,
                 Utilidades.getPowerLevel(getApplicationContext(),txpower),
                 Utilidades.getADMode(getApplicationContext(),admode)));
