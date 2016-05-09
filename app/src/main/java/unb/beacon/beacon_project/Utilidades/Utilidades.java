@@ -27,7 +27,6 @@ public class Utilidades extends Activity{
     public static final String P_TXPOWER = "tx_power_level";
     public static final String P_TXMODE = "tx_advertise_mode";
 
-
     public static void showAlert(String title, String msg, Activity a)
     {
         new AlertDialog.Builder(a)

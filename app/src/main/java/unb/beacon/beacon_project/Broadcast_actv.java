@@ -37,21 +37,25 @@ public class Broadcast_actv extends Activity {
 
     private boolean request_bluetooth()
     {
-        BluetoothManager m = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter mBluetoothAdapter = m.getAdapter();
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         boolean ok = false;
         if (mBluetoothAdapter == null) {
             Utilidades.showAlert("Erro", "Bluetooth não existe!",this);
         } else {
-            if (!mBluetoothAdapter.isEnabled()) {
+            if (!mBluetoothAdapter.isEnabled())
+            {
                 Intent enablebt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 this.startActivityForResult(enablebt, Utilidades.REQUEST_ENABLE_BLUETOOTH);
-            } else if (!mBluetoothAdapter.isMultipleAdvertisementSupported()) {
-                Utilidades.showAlert("Erro", "Bluetooth LE não suportado", this);
-            } else {
+            }
+            else
+            {
                 adv = mBluetoothAdapter.getBluetoothLeAdvertiser();
                 advertiseCallback = createAdvertiseCallback();
                 ok = true;
+            }
+            if (!mBluetoothAdapter.isMultipleAdvertisementSupported())
+            {
+                Utilidades.showAlert("Erro", "Bluetooth LE MULTIAD não suportado", this);
             }
         }
         return ok;
@@ -129,8 +133,8 @@ public class Broadcast_actv extends Activity {
         AdvertiseData advertiseData = new AdvertiseData.Builder()
                 .addServiceData(Utilidades.SERVICE_UUID, serviceData)
                 .addServiceUuid(Utilidades.SERVICE_UUID)
-                .setIncludeTxPowerLevel(false)
                 .setIncludeDeviceName(false)
+                .setIncludeTxPowerLevel(false)
                 .build();
         adv.startAdvertising(advertiseSettings, advertiseData, advertiseCallback);
     }
@@ -145,9 +149,9 @@ public class Broadcast_actv extends Activity {
         byte[] bnamespace = Utilidades.toByteArray(namespace);
         byte[] binstance = Utilidades.toByteArray(instance);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        os.write(new byte[]{Utilidades.FRAME_TYPE_UID,btxpower});
-        os.write(bnamespace);
-        os.write(binstance);
+        os.write(new byte[]{Utilidades.FRAME_TYPE_UID,btxpower}); // 2byte
+        os.write(bnamespace); // 10 bytes
+        os.write(binstance); // 6 bytes
         return os.toByteArray();
     }
 
