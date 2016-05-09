@@ -63,6 +63,17 @@ public class Utilidades extends Activity{
         return s;
     }
 
+    public static double getDistance(int rssi, int txPower) {
+    /*
+     * RSSI = TxPower - 10 * n * lg(d)
+     * n = 2 (in free space)
+     *
+     * d = 10 ^ ((TxPower - RSSI) / (10 * n))
+     */
+
+        return Math.pow(10d, ((double) txPower - rssi) / (10 * 2));
+    }
+
     public static int getPowerLevel(Context context,String powerlevel)
     {
         int s = 0;

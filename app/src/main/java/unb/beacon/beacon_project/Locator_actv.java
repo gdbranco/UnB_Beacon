@@ -27,6 +27,7 @@ public class Locator_actv extends Activity {
     private ScanCallback scanCallback;
     private boolean hasBT;
     private TextView Locator_text;
+    private boolean isScan = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +48,24 @@ public class Locator_actv extends Activity {
     private void Interface()
     {
         Locator_text = (TextView) findViewById(R.id.locator_text);
-        startDiscovery();
-        /*mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        mHandler.post(scanRun);
+    }
+
+    private Runnable scanRun = new Runnable() {
+        @Override
+        public void run() {
+            if(isScan)
+            {
                 stopDiscovery();
             }
-        },500);*/
-    }
+            else
+            {
+                startDiscovery();
+            }
+            isScan = !isScan;
+            mHandler.postDelayed(this,500);
+        }
+    };
 
     private boolean request_bluetooth()
     {
@@ -117,11 +128,7 @@ public class Locator_actv extends Activity {
                     case Utilidades.FRAME_TYPE_UID:
                         StringBuilder b = new StringBuilder();
                         //POWER FICA NO SEGUNDO BYTE
-                        String power;
-                        Byte bpower = data[1];
-                        b.append(new Integer(bpower.intValue()).toString());
-                        power = b.toString();
-                        b = new StringBuilder();
+                        Integer power = new Byte(data[1]).intValue();
                         //NAMESPACE FICA NO MEIO
                         String name;
                         for(int i = 2;i<12;i++)
@@ -137,8 +144,9 @@ public class Locator_actv extends Activity {
                             b.append(Integer.toHexString(data[i] & 0xFF));
                         }
                         id = b.toString();
-                        String rssi = new Integer(result.getRssi()).toString();
-                        Locator_text.setText(String.format("NAMESPACE: %s\nID: %s\nTXPOWER: %s\nRSSI: %s\n",name,id,power,rssi));
+                        Integer rssi = new Integer(result.getRssi());
+                        Double distance = Utilidades.getDistance(rssi,power);
+                        Locator_text.setText(String.format("NAMESPACE: %s\nID: %s\nTXPOWER: %d\nRSSI: %d\nDISTANCIA: %.2f\n",Utilidades.hextoString(name),id,power,rssi,distance));
                         break;
                 }
 
