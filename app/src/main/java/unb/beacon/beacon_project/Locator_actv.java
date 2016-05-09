@@ -146,7 +146,8 @@ public class Locator_actv extends Activity {
                         id = b.toString();
                         Integer rssi = new Integer(result.getRssi());
                         Double distance = Utilidades.getDistance(rssi,power);
-                        Locator_text.setText(String.format("NAMESPACE: %s\nID: %s\nTXPOWER: %d\nRSSI: %d\nDISTANCIA: %.2f\n",Utilidades.hextoString(name),id,power,rssi,distance));
+                        Double distance2 = Utilidades.calculateAccuracy(rssi,power);
+                        Locator_text.setText(String.format("NAMESPACE: %s\nID: %s\nTXPOWER: %d\nRSSI: %d\nDISTANCIA: %.2f\nDISTANCIA2: %.2f\n",name,id,power,rssi,distance,distance2));
                         break;
                 }
 

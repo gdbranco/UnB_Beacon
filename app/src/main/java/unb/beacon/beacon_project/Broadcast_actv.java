@@ -93,8 +93,8 @@ public class Broadcast_actv extends Activity {
     private void Interface()
     {
         TextView text = (TextView) findViewById(R.id.broadcast_texto);
-        text.setText(String.format(Locale.US,"NAMESPACE: %s\nINSTANCE: %s\nPOWERLEVEL: %s\nADMODE: %s",
-                Utilidades.hextoString(namespace),
+        text.setText(String.format("NAMESPACE: %s\nINSTANCE: %s\nPOWERLEVEL: %s\nADMODE: %s",
+                namespace,
                 instance,
                 Utilidades.getPowerLevel(getApplicationContext(),txpower),
                 Utilidades.getADMode(getApplicationContext(),admode)));
@@ -112,8 +112,8 @@ public class Broadcast_actv extends Activity {
 
     private void startAdvertising()
     {
-        showToast(String.format(Locale.US,"NAMESPACE: %s\nINSTANCE: %s\nPOWERLEVEL: %s\nADMODE: %s",
-                Utilidades.hextoString(namespace),
+        showToast(String.format("NAMESPACE: %s\nINSTANCE: %s\nPOWERLEVEL: %s\nADMODE: %s",
+                namespace,
                 instance,
                 Utilidades.getPowerLevel(getApplicationContext(),txpower),
                 Utilidades.getADMode(getApplicationContext(),admode)));
