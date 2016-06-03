@@ -53,10 +53,6 @@ public class Broadcast_actv extends Activity {
                 advertiseCallback = createAdvertiseCallback();
                 ok = true;
             }
-            if (!mBluetoothAdapter.isMultipleAdvertisementSupported())
-            {
-                Utilidades.showAlert("Erro", "Bluetooth LE MULTIAD não suportado", this);
-            }
         }
         return ok;
     }
@@ -75,6 +71,13 @@ public class Broadcast_actv extends Activity {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        stopAdvertising();
     }
 
     private void init()
@@ -103,10 +106,6 @@ public class Broadcast_actv extends Activity {
 
     public void onBackPressed()
     {
-        if(hasBT)
-        {
-            stopAdvertising();
-        }
         finish();
     }
 

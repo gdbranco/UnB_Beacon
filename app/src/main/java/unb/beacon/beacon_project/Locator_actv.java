@@ -8,32 +8,43 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.ParcelUuid;
-import android.text.TextUtils;
+import android.os.Bundle;;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
-
-import java.nio.charset.Charset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import unb.beacon.beacon_project.Utilidades.Beacon;
 import unb.beacon.beacon_project.Utilidades.Utilidades;
 
 public class Locator_actv extends Activity {
     private BluetoothLeScanner mBluetoothScanner;
-    private Handler mHandler = new Handler();
+    //private Handler mHandler = new Handler();
     private ScanCallback scanCallback;
     private boolean hasBT;
     private TextView Locator_text;
-    private boolean isScan = false;
+    private ListView List_view;
+    private int i = 0;
+    private ArrayList<Beacon> lista_beacons;
+    private ListView lv;
+    private ArrayAdapter<Beacon> arrayAdapter;
+    //private boolean isScan = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_locator);
         init();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        stopDiscovery();
     }
 
     private void init()
@@ -48,24 +59,12 @@ public class Locator_actv extends Activity {
     private void Interface()
     {
         Locator_text = (TextView) findViewById(R.id.locator_text);
-        mHandler.post(scanRun);
+        lista_beacons = new ArrayList<Beacon>();
+        List_view = (ListView) findViewById(R.id.listView);
+        arrayAdapter = new ArrayAdapter<Beacon>(this,android.R.layout.simple_list_item_1, lista_beacons);
+        List_view.setAdapter(arrayAdapter);
+        startDiscovery();
     }
-
-    private Runnable scanRun = new Runnable() {
-        @Override
-        public void run() {
-            if(isScan)
-            {
-                stopDiscovery();
-            }
-            else
-            {
-                startDiscovery();
-            }
-            isScan = !isScan;
-            mHandler.postDelayed(this,500);
-        }
-    };
 
     private boolean request_bluetooth()
     {
@@ -79,15 +78,10 @@ public class Locator_actv extends Activity {
                 Intent enablebt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 this.startActivityForResult(enablebt, Utilidades.REQUEST_ENABLE_BLUETOOTH);
             }
-            else
-            {
+            else {
                 mBluetoothScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
                 scanCallback = createScanCallback();
                 ok = true;
-            }
-            if (!mBluetoothAdapter.isMultipleAdvertisementSupported())
-            {
-                Utilidades.showAlert("Erro", "Bluetooth LE MULTIAD não suportado", this);
             }
         }
         return ok;
@@ -123,31 +117,27 @@ public class Locator_actv extends Activity {
 
                 byte frametype = data[0];
 
-                switch(frametype)
-                {
+                switch(frametype) {
                     case Utilidades.FRAME_TYPE_UID:
-                        StringBuilder b = new StringBuilder();
-                        //POWER FICA NO SEGUNDO BYTE
                         Integer power = new Byte(data[1]).intValue();
-                        //NAMESPACE FICA NO MEIO
                         String name;
-                        for(int i = 2;i<12;i++)
-                        {
-                            b.append(Integer.toHexString(data[i] & 0xFF));
-                        }
-                        name = b.toString();
-                        b = new StringBuilder();
-                        //ID FICA NOS UTLIMOS 6 BYTES DO DATA
                         String id;
-                        for(int i = 12;i<18;i++)
-                        {
-                            b.append(Integer.toHexString(data[i] & 0xFF));
-                        }
-                        id = b.toString();
+                        name = Beacon.getInstanceNSpace(data);
+                        id = Beacon.getInstanceId(data);
                         Integer rssi = new Integer(result.getRssi());
-                        Double distance = Utilidades.getDistance(rssi,power);
-                        Double distance2 = Utilidades.calculateAccuracy(rssi,power);
-                        Locator_text.setText(String.format("NAMESPACE: %s\nID: %s\nTXPOWER: %d\nRSSI: %d\nDISTANCIA: %.2f\nDISTANCIA2: %.2f\n",name,id,power,rssi,distance,distance2));
+                        Double distance = Utilidades.getDistance(rssi, power);
+                        boolean achou = false;
+                        for (Beacon b : lista_beacons) {
+                            if (id.equals(b.id)) {
+                                b.update(rssi, power, -1, distance);
+                                arrayAdapter.notifyDataSetChanged();
+                                achou = true;
+                            }
+                        }
+                        if (!achou) {
+                            lista_beacons.add(new Beacon(name, id, rssi.intValue(), power.intValue(), -1, distance));
+                            arrayAdapter.notifyDataSetChanged();
+                        }
                         break;
                 }
 
@@ -167,6 +157,7 @@ public class Locator_actv extends Activity {
 
     private void startDiscovery()
     {
+        Locator_text.setText("Scanning");
         List<ScanFilter> filters = new ArrayList<>();
         ScanFilter filter = new ScanFilter.Builder()
                 .setServiceUuid(Utilidades.SERVICE_UUID)
@@ -186,10 +177,6 @@ public class Locator_actv extends Activity {
 
     public void onBackPressed()
     {
-        if(hasBT)
-        {
-            stopDiscovery();
-        }
         finish();
     }
 }

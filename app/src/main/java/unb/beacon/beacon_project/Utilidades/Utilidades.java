@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.ParcelUuid;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Random;
 
 import unb.beacon.beacon_project.R;
@@ -71,7 +72,7 @@ public class Utilidades extends Activity{
      * d = 10 ^ ((TxPower - RSSI) / (10 * n))
      */
 
-        return Math.pow(10d, ((double) txPower - rssi) / (10 * 2))/100;
+        return (Math.pow(10d, ((double) txPower - rssi) / (10 * 2)))/100;
     }
 
     public static double calculateAccuracy(int rssi, int txPower) {
@@ -86,7 +87,34 @@ public class Utilidades extends Activity{
         else {
             double accuracy =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
             return accuracy/100;
+
         }
+    }
+
+    public static double[] trilaterar(double[] p1, double[] p2, double[] p3, double d1, double d2, double d3)
+    {
+        double[] posfinal = new double[2];
+        //Vetor unidade na direcao p1 a p2
+        double p2p1Distance = Math.pow(Math.pow(p2[0]-p1[0],2) + Math.pow(p2[1]-p1[1],2),0.5);
+        double exx = (p2[0]-p1[0])/p2p1Distance;
+        double exy =  (p2[1]-p1[1])/p2p1Distance;
+        //Magnitude de x
+        double i = exx*(p3[0]-p1[0])+exy*(p3[1]-p1[1]);
+        //vetor unidade direcao y
+        double iexx = p3[0]-p1[0]-i*exx;
+        double iexy = p3[1]-p1[1]-i*exy;
+        double eyx = (iexx)/Math.pow(Math.pow(iexx,2)+Math.pow(iexy,2),0.5);
+        double eyy = (iexy)/Math.pow(Math.pow(iexx,2)+Math.pow(iexy,2),0.5);
+        //Magnitude de y
+        double j = eyx*(p3[0]-p1[0])+eyy*(p3[1]-p1[1]);
+        //coord
+        double x = (Math.pow(d1,2) - Math.pow(d2,2) + Math.pow(p2p1Distance,2))/(2*p2p1Distance);
+        double y = (Math.pow(d1,2) - Math.pow(d3,2) + Math.pow(i,2) + Math.pow(j,2))/(2*j) - i*x/j;
+        double fx = p1[0] + x*exx + y*eyx;
+        double fy = p1[1] + x*exy + y*eyy;
+        posfinal[0] = fx;
+        posfinal[1] = fy;
+        return posfinal;
     }
 
     public static int getPowerLevel(Context context,String powerlevel)

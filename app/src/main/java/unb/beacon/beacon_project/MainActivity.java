@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import java.util.Locale;
+
 import unb.beacon.beacon_project.Utilidades.Utilidades;
 
 
@@ -60,5 +63,12 @@ public class MainActivity extends AppCompatActivity{
                 }
             });
         }
+        /*double p1[] = {4.0,4.0};
+        double p2[] = {9.0,7.0};
+        double p3[] = {9.0,1.0};
+        double d1 = 4,d2 = 3, d3 = 3.25;
+        double[] pos;
+        pos = Utilidades.trilaterar(p1,p2,p3,d1,d2,d3);
+        texto.setText(String.format(Locale.US,"x: %f y: %f",pos[0],pos[1]));*/
     }
 }
